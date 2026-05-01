@@ -2,27 +2,29 @@ class_name Player extends CharacterBody2D
 
 var cardinal_direction: Vector2 = Vector2.DOWN
 var direction: Vector2 = Vector2.ZERO
-var move_speed: float = 100.0
-var state: String = "idle"
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var sprite: Sprite2D = $Sprite2D
-
+@onready var state_machine: PlayerStateMachine = $StateMachine
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	state_machine.Initialize(self)
 	pass # Replace with function body.
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	
+	# Retrieve direction input
+	# Separate Input Map actions for DPad and Joysticks. Putting both 
+	# on one action means that when you use get_vector(), you read the dpad input
+	# as well as the noise on the joysticks as the same time. This leads to capturing
+	# non cardinal directions when only using DPad.
 	direction = Input.get_vector("left", "right", "up", "down")
+	if direction == Vector2.ZERO: # Only attempt to get joystick input when no other direction data is obtained.
+		direction = Input.get_vector("joy_left", "joy_right", "joy_up", "joy_down")
 	
-	velocity = direction * move_speed
-	
-	if set_state() or set_direction():
-		update_animation()
+	pass
 
 
 func _physics_process(delta: float) -> void:
@@ -33,24 +35,23 @@ func set_direction() -> bool:
 	
 	if direction == Vector2.ZERO:
 		return false
-	
-	if abs(direction.y) > abs(direction.x):
+		
+	if abs(direction.x) >= abs(direction.y):
+		new_direction = Vector2.LEFT if direction.x <= 0 else Vector2.RIGHT
+	else:
 		new_direction = Vector2.UP if direction.y < 0 else Vector2.DOWN
-	else
-		new_direc
-	return true
-	
-func set_state() -> bool:
-	var new_state: String = "idle" if direction == Vector2.ZERO else "walk"
-	
-	if new_state == state:
+		
+	if new_direction == cardinal_direction:
 		return false
-	state = new_state
+	cardinal_direction = new_direction
+	
+	sprite.scale.x = -1 if cardinal_direction == Vector2.LEFT else 1
 	return true
 
-func update_animation() -> void:
-	
+
+func update_animation(state: String) -> void:
 	animation_player.play("%s_%s" % [state, animation_direction()])
+	pass
 
 func animation_direction() -> String:
 	if cardinal_direction == Vector2.DOWN:
