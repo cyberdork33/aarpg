@@ -23,7 +23,7 @@ func _process(delta: float) -> void:
 	direction = Input.get_vector("left", "right", "up", "down")
 	if direction == Vector2.ZERO: # Only attempt to get joystick input when no other direction data is obtained.
 		direction = Input.get_vector("joy_left", "joy_right", "joy_up", "joy_down")
-	
+
 	pass
 
 

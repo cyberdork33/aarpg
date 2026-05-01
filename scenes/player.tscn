@@ -6,7 +6,9 @@
 [ext_resource type="Script" uid="uid://bjlm7omb83drg" path="res://scenes/state_idle.gd" id="4_dqkch"]
 [ext_resource type="Script" uid="uid://cffr3koj26vnv" path="res://scenes/state_walk.gd" id="5_qlg0r"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_maef2"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qlg0r"]
+radius = 5.0
+height = 24.0
 
 [sub_resource type="Animation" id="Animation_g2els"]
 length = 0.001
@@ -137,13 +139,17 @@ _data = {
 }
 
 [node name="Player" type="CharacterBody2D" unique_id=1536186956]
+collision_mask = 16
+motion_mode = 1
+wall_min_slide_angle = 0.17453292
 script = ExtResource("1_g2els")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1723449927]
-shape = SubResource("CircleShape2D_maef2")
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_qlg0r")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1616944087]
-position = Vector2(0, -20)
+position = Vector2(1, -19)
 texture = ExtResource("1_3vyb7")
 hframes = 21
 
@@ -158,3 +164,5 @@ script = ExtResource("4_dqkch")
 
 [node name="Walk" type="Node" parent="StateMachine" unique_id=1464391057]
 script = ExtResource("5_qlg0r")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=496410823]
