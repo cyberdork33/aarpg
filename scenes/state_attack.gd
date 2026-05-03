@@ -11,55 +11,55 @@ var attacking: bool = false
 
 @onready var walk: State = $"../Walk"
 @onready var idle: State = $"../Idle"
-@onready var hurt_box: HurtBox = $"../../Interactions/HurtBox"
+@onready var hurt_box: HurtBox = %AttackHurtBox
 
 # What happens when player enters this state.
 func Enter() -> void:
-	
-	# Animation
-	player.update_animation("attack")
-	attack_effect_animation.play("attack_%s" % player.animation_direction())
-	animation_player.animation_finished.connect(EndAttack)
-	
-	#Audio
-	audio.stream = attack_sound
-	audio.pitch_scale = randf_range(0.90, 1.1)
-	audio.play()
-	
-	attacking = true
-	
-	# Delay for partial animation
-	var wait_time = attack_effect_animation.current_animation_length / 4
-	await get_tree().create_timer(wait_time).timeout 
-	hurt_box.monitoring = true
-	
-	pass
+
+  # Animation
+  player.update_animation("attack")
+  attack_effect_animation.play("attack_%s" % player.animation_direction())
+  animation_player.animation_finished.connect(EndAttack)
+
+  #Audio
+  audio.stream = attack_sound
+  audio.pitch_scale = randf_range(0.90, 1.1)
+  audio.play()
+
+  attacking = true
+
+  # Delay for partial animation
+  var wait_time = attack_effect_animation.current_animation_length / 4
+  await get_tree().create_timer(wait_time).timeout
+  hurt_box.monitoring = true
+
+  pass
 
 # What happens when player exits this state.
 func Exit() -> void:
-	animation_player.animation_finished.disconnect(EndAttack)
-	attacking = false
-	hurt_box.monitoring = false
-	pass
+  animation_player.animation_finished.disconnect(EndAttack)
+  attacking = false
+  hurt_box.monitoring = false
+  pass
 
 # What happens during the _process update in this state?
 func Process(_delta: float) -> State:
-	player.velocity -= player.velocity * decelerate_speed * _delta
-	
-	if !attacking:
-		if player.direction == Vector2.ZERO:
-			return idle
-		else:
-			return walk
-	return null
+  player.velocity -= player.velocity * decelerate_speed * _delta
+
+  if !attacking:
+    if player.direction == Vector2.ZERO:
+      return idle
+    else:
+      return walk
+  return null
 
 # What happens during the _physics_process update in this state?
 func Physics(_delta: float) -> State:
-	return null
-	
+  return null
+
 # What happens with input events in this state?
 func HandleInput(_event: InputEvent) -> State:
-	return null
-	
+  return null
+
 func EndAttack(_newAnimationName: String) -> void:
-	attacking = false
+  attacking = false
