@@ -11,6 +11,7 @@ signal DirectionChanged(direction: Vector2)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+  PlayerManager.player = self
   state_machine.Initialize(self)
   pass # Replace with function body.
 
@@ -49,7 +50,6 @@ func set_direction() -> bool:
   DirectionChanged.emit(new_direction)
   sprite.scale.x = -1 if cardinal_direction == Vector2.LEFT else 1
   return true
-
 
 func update_animation(state: String) -> void:
   animation_player.play("%s_%s" % [state, animation_direction()])
