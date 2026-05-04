@@ -14,52 +14,52 @@ var attacking: bool = false
 @onready var hurt_box: HurtBox = %AttackHurtBox
 
 # What happens when player enters this state.
-func Enter() -> void:
+func enter() -> void:
 
   # Animation
-  player.update_animation("attack")
-  attack_effect_animation.play("attack_%s" % player.animation_direction())
-  animation_player.animation_finished.connect(EndAttack)
+  self.player.update_animation("attack")
+  self.attack_effect_animation.play("attack_%s" % player.animation_direction())
+  self.animation_player.animation_finished.connect(self.end_attack)
 
   #Audio
-  audio.stream = attack_sound
-  audio.pitch_scale = randf_range(0.90, 1.1)
-  audio.play()
+  self.audio.stream = attack_sound
+  self.audio.pitch_scale = randf_range(0.90, 1.1)
+  self.audio.play()
 
-  attacking = true
+  self.attacking = true
 
   # Delay for partial animation
   var wait_time = attack_effect_animation.current_animation_length / 4
-  await get_tree().create_timer(wait_time).timeout
-  hurt_box.monitoring = true
+  await self.get_tree().create_timer(wait_time).timeout
+  self.hurt_box.monitoring = true
 
   pass
 
 # What happens when player exits this state.
-func Exit() -> void:
-  animation_player.animation_finished.disconnect(EndAttack)
-  attacking = false
-  hurt_box.monitoring = false
+func exit() -> void:
+  self.animation_player.animation_finished.disconnect(self.end_attack)
+  self.attacking = false
+  self.hurt_box.monitoring = false
   pass
 
 # What happens during the _process update in this state?
-func Process(_delta: float) -> State:
-  player.velocity -= player.velocity * decelerate_speed * _delta
+func process(_delta: float) -> State:
+  self.player.velocity -= player.velocity * decelerate_speed * _delta
 
-  if !attacking:
-    if player.direction == Vector2.ZERO:
-      return idle
+  if !self.attacking:
+    if self.player.direction == Vector2.ZERO:
+      return self.idle
     else:
-      return walk
+      return self.walk
   return null
 
 # What happens during the _physics_process update in this state?
-func Physics(_delta: float) -> State:
+func physics(_delta: float) -> State:
   return null
 
 # What happens with input events in this state?
-func HandleInput(_event: InputEvent) -> State:
+func handle_input(_event: InputEvent) -> State:
   return null
 
-func EndAttack(_newAnimationName: String) -> void:
-  attacking = false
+func end_attack(_newAnimationName: String) -> void:
+  self.attacking = false

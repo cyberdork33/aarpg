@@ -10,6 +10,5 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
   pass
 
-func TakeDamage(damage: int) -> void:
-  #print("TakeDamage: ", damage)
+func take_damage(damage: int) -> void:
   self.damaged.emit(damage)

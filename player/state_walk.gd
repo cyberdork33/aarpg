@@ -6,31 +6,31 @@ class_name State_Walk extends State
 @onready var attack: State_Attack = $"../Attack"
 
 # What happens when player enters this state.
-func Enter() -> void:
-  player.update_animation("walk")
+func enter() -> void:
+  self.player.update_animation("walk")
   pass
 
 # What happens when player exits this state.
-func Exit() -> void:
+func exit() -> void:
   pass
 
 # What happens during the _process update in this state?
-func Process(_delta: float) -> State:
-  if player.direction == Vector2.ZERO:
+func process(_delta: float) -> State:
+  if self.player.direction == Vector2.ZERO:
     return idle
 
-  player.velocity = player.direction * move_speed
+  self.player.velocity = self.player.direction * self.move_speed
 
-  if player.set_direction():
-    player.update_animation("walk")
+  if self.player.set_direction():
+    self.player.update_animation("walk")
   return null
 
 # What happens during the _physics_process update in this state?
-func Physics(_delta: float) -> State:
+func physics(_delta: float) -> State:
   return null
 
 # What happens with input events in this state?
-func HandleInput(_event: InputEvent) -> State:
+func handle_input(_event: InputEvent) -> State:
   if _event.is_action_pressed("attack"):
-    return attack
+    return self.attack
   return null
