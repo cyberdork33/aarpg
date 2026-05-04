@@ -723,6 +723,7 @@ _data = {
 collision_layer = 256
 collision_mask = 16
 script = ExtResource("1_57eei")
+hit_points = null
 
 [node name="HurtBox" parent="." unique_id=1161374033 instance=ExtResource("7_bkm6f")]
 

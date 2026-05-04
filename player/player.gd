@@ -1,18 +1,28 @@
 class_name Player extends CharacterBody2D
 
+signal direction_changed(direction: Vector2)
+signal player_damaged(hurt_box: HurtBox)
+
 var cardinal_direction: Vector2 = Vector2.DOWN
 var direction: Vector2 = Vector2.ZERO
 
+var invulnerable: bool = false
+var hit_points: int = 6
+var max_hit_points = 6
+const FULL_HEALTH = 99
+
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var effect_animation_player: AnimationPlayer = $EffectAnimationPlayer
+@onready var hit_box: HitBox = $HitBox
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var state_machine: PlayerStateMachine = $StateMachine
-
-signal direction_changed(direction: Vector2)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
   PlayerManager.player = self
   self.state_machine.initialize(self)
+  self.hit_box.damaged.connect(_take_damage)
+  self.update_hit_points(FULL_HEALTH)
   pass # Replace with function body.
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -62,3 +72,28 @@ func animation_direction() -> String:
     return "up"
   else:
     return "side"
+
+func _take_damage(hurt_box: HurtBox) -> void:
+  if !self.invulnerable:
+    self.update_hit_points(-hurt_box.damage)
+    if self.hit_points > 0:
+      self.player_damaged.emit(hurt_box)
+    else:
+      self.player_damaged.emit(hurt_box)
+      self.update_hit_points(FULL_HEALTH)
+  print(self.hit_points)
+  pass
+
+func update_hit_points(increment: int) -> void:
+  self.hit_points = clamp(self.hit_points + increment, 0, self.max_hit_points)
+  pass
+  
+func make_invulverable(_duration: float = 1.0) -> void:
+  self.invulnerable = true
+  self.hit_box.monitoring = false
+  
+  await self.get_tree().create_timer(_duration).timeout
+  self.invulnerable = false
+  self.hit_box.monitoring = true
+  pass
+ 
