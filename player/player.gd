@@ -86,7 +86,7 @@ func _take_damage(hurt_box: HurtBox) -> void:
 
 func update_hit_points(increment: int) -> void:
   self.hit_points = clamp(self.hit_points + increment, 0, self.max_hit_points)
-  PlayerHud.update_hit_points(self.hit_points, self.max_hit_points)
+  PlayerHud.display_hit_points(self.hit_points, self.max_hit_points)
   pass
   
 func make_invulverable(_duration: float = 1.0) -> void:
