@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 LevelManager="*uid://cvhasetitnmw6"
 PlayerManager="*uid://d1qv03hm6jdwu"
+PlayerHud="*uid://bus7qd4bajiw7"
 
 [display]
 
