@@ -27,5 +27,5 @@ func display_max_containers(_max_hit_points: int) -> void:
     if heart_index < _displayed_heart_count:
       self.heart_containers[heart_index].visible = true
     else:
-      self.heart_containers[heart_index].visible
+      self.heart_containers[heart_index].visible = false
   pass
